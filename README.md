@@ -56,6 +56,14 @@ Activate the sql proxy to allow the server to connect to our MySQL database. Run
 
 ### Run server
 
+First, activate the virtual environment.
+
+```
+source env/bin/activate
+```
+
+Then run the server.
+
 ```
 python manage.py runserver
 ```
