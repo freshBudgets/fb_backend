@@ -17,3 +17,6 @@ install:
 
 env:
   - DJANGO_VERSION=2.1.4
+
+script:
+    - pytest
