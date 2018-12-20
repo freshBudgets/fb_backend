@@ -78,3 +78,5 @@ localhost:8000
 * https://www.techiediaries.com/create-react-app-django/
 * https://cloud.google.com/python/django/appengine
 * https://cloud.google.com/appengine/docs/flexible/python/testing-and-deploying-your-app
+* https://console.cloud.google.com/sql/instances?project=freshbudgets
+* https://cloud.google.com/appengine/docs/standard/python/config/appref
