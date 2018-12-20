@@ -1,5 +1,7 @@
 # .travis.yml
-language: python37
+language: python
+python:
+    - "3.7"
 deploy:
   provider: gae
   keyfile: client-secret.json
