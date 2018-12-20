@@ -1,9 +1,15 @@
+# .travis.yml
 language: python
 deploy:
   provider: gae
   keyfile: client-secret.json
   project: freshbudgets
   on: master
+
 before_install:
 - openssl aes-256-cbc -K $encrypted_2f9dea2d8fd1_key -iv $encrypted_2f9dea2d8fd1_iv
   -in client-secret.json.enc -out client-secret.json -d
+
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
