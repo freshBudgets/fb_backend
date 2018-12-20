@@ -20,7 +20,7 @@ These are configured on a per-machine basis, so that is why it is not included i
 Start by creating a virtual environment called 'env' and specifying it to use Python 3
 
 ```
-virtualenv -p Python3 env
+virtualenv --python Python3 env
 ```
 
 This will create a folder named /env/ in whatever directory you are in. 
