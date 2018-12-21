@@ -174,6 +174,10 @@ REST_FRAMEWORK = {
     ),
 }
 
+# If JWT_ALLOW_REFRESH is True, non-expired tokens can
+# be "refreshed" to obtain a brand new token with renewed expiration time.
+JWT_ALLOW_REFRESH = False
+
 
 # Does not require trailing forward slash on url POSTs
 APPEND_SLASH = False
