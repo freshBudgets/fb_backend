@@ -6,45 +6,36 @@ from django.contrib.auth.models import (
 )
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password, first_name, last_name, phone):
-        """
-        Creates and saves a User with the given email, first name, 
-        last name, phone, and password.
-        """
+    def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError("User must have an email address")
-        if not phone:
-            raise ValueError("User must have a phone number")
-        if not password:
-            raise ValueError("User must have a password")
 
-        user = self.model(
-            email = self.normalize_email(email),
-            first_name = first_name,
-            last_name = last_name,
-            phone = phone
-        )
+        email = self.normalize_email(email)
+        user = self.model(email = email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password, first_name, last_name, phone):
+        
+    def create_user(self, email, password=None, **extra_fields):
+        """
+        Creates and saves a User with the given email, first name, 
+        last name, phone, and password.
+        """
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
         """
         Creates and saves a superuser with the given email, first name,
         last name, phone, and password
         """
-        user = self.create_user(
-            email,
-            password = password,
-            first_name = first_name,
-            last_name = last_name,
-            phone = phone
-        )
-        user.is_staff = True
-        user.is_admin = True
-        user.save(using=self._db)
-        return user
+        extra_fields.setdefault('is_superuser', True)
 
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
 
 
 class User(AbstractBaseUser):
@@ -53,10 +44,10 @@ class User(AbstractBaseUser):
         max_length=255,
         unique=True
     )
-    first_name  = models.CharField(max_length=255)
-    last_name   = models.CharField(max_length=255)
+    first_name  = models.CharField(max_length=255, blank=True)
+    last_name   = models.CharField(max_length=255, blank=True)
     phone       = models.CharField(max_length=20)
-    timestamp   = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
     is_active   = models.BooleanField(default=True) # can login
     is_staff    = models.BooleanField(default=False) # is staff
     is_admin    = models.BooleanField(default=False) # is superuser/admin
@@ -64,7 +55,7 @@ class User(AbstractBaseUser):
     # changes 'username' field to be 'email' so users login with email instead of username
     USERNAME_FIELD = 'email'
     # email and password are required by default
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone']
+    REQUIRED_FIELDS = []
     # assign UserManager as a manager for User
     objects = UserManager()
 
@@ -72,12 +63,11 @@ class User(AbstractBaseUser):
         return self.email
 
     def get_full_name(self):
-        # The user is identified by their email address
-        return self.email
+        full_name = "%s %s" % (self.first_name, self.last_name)
+        return full_name.strip()
 
     def get_short_name(self):
-        # The user is identified by their email address
-        return self.email
+        return self.first_name
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
