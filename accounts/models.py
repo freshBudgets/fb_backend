@@ -62,6 +62,18 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.email
 
+    def __itr__(self):
+        return [
+            self.email,
+            self.first_name,
+            self.last_name,
+            self.phone,
+            self.date_joined,
+            self.is_active,
+            self.is_staff,
+            self.is_admin
+        ]
+
     def get_full_name(self):
         full_name = "%s %s" % (self.first_name, self.last_name)
         return full_name.strip()
