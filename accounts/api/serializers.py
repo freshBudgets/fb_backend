@@ -25,6 +25,7 @@ class UserCreateSerializer(ModelSerializer):
         # prevents returning json from displaying given password
         extra_kwargs = {'password': {'write_only': True}}
     
+    # overrides ModelSerializer.create() to save the object in the database after creation
     def create(self, validated_data):
         email = validated_data['email'] 
         password = validated_data['password']
