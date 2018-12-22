@@ -1,17 +1,13 @@
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
-
-from rest_framework.serializers import (
-        HyperlinkedIdentityField,
-        ModelSerializer,
-        SerializerMethodField,
-        ValidationError,
-    )
+from django.db.models import Q
+from rest_framework import serializers
+from rest_framework.serializers import CharField, EmailField
 
 
 User = get_user_model()
 
-class UserCreateSerializer(ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
@@ -43,3 +39,51 @@ class UserCreateSerializer(ModelSerializer):
         user_obj.save()
 
         return validated_data
+
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    email = EmailField(label='Email Address', allow_blank=True, required=False)
+    # phone = CharField(allow_blank=True, required=False)
+    token = CharField(allow_blank=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            # 'phone',
+            'password',
+            'token',
+        ]
+
+        # prevents returning json from displaying given password
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def validate(self, data):
+        email = data['email']
+        # phone = data['phone']
+        raw_password = data['password']
+        user_obj = None
+
+        if not email and not phone:
+            raise serializers.ValidationError("An email is required to login")
+
+        # user = User.objects.filter(       # Do this for phone OR email login
+        #         Q(email=email) |
+        #         Q(phone=phone)
+        #     ).distinct()              
+        user = User.objects.filter(email=email).distinct()
+
+        if user.exists() and user.count() == 1:
+            user_obj = user.first()
+        else:
+            raise serializers.ValidationError("This email is not valid")
+        
+        if user_obj:
+            if user_obj.check_password(raw_password) == False:
+                raise serializers.ValidationError("Invalid password")
+        
+        else:
+            raise serializers.ValidationError("Invalid credentials")
+                
+        data['token'] = "SOME RANDOM TOKEN"
+        return data
