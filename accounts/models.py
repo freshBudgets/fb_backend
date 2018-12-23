@@ -44,3 +44,4 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
+
