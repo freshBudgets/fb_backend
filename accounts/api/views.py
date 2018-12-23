@@ -34,7 +34,6 @@ User = get_user_model()
 
 class UserCreateAPIView(CreateAPIView):
     permission_classes = [AllowAny]
-
     serializer_class = UserCreateSerializer
     queryset = User.objects.all()
 
@@ -47,10 +46,10 @@ class UserLoginAPIView(APIView):
         data = request.data
         serializer = UserLoginSerializer(data=data)
 
+        # if data is not valid with serializer, raise exception
         if serializer.is_valid(raise_exception=True):
             new_data = serializer.data
             return Response(new_data, status=HTTP_200_OK)
         else:
             return Response(serializer.error, status=HTTP_400_BAD_REQUEST)
-    
 
