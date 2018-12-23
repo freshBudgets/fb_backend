@@ -30,6 +30,10 @@ from .serializers import (
 from django.contrib.auth import get_user_model
 
 
+#####################
+# ACCOUNT API VIEWS #
+#####################
+
 User = get_user_model()
 
 class UserCreateAPIView(CreateAPIView):
