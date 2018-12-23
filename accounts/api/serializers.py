@@ -69,19 +69,16 @@ class UserLoginSerializer(serializers.ModelSerializer):
         if not email and not phone:
            raise serializers.ValidationError("An email is required to login")
 
+        # find users with with either a matching email or phone number
         user = User.objects.filter(       # Do this for phone OR email login
                 Q(email=email) |
                 Q(phone=phone)
             ).distinct()              
 
-        # user = User.objects.filter(email=email).distinct()
-
-        print(user)
-
         if user.exists() and user.count() == 1:
             user_obj = user.first()
         else:
-            raise serializers.ValidationError("This email is not valid")
+            raise serializers.ValidationError("Invalid credentials")
         
         if user_obj:
             if user_obj.check_password(raw_password) == False:

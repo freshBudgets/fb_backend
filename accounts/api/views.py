@@ -1,6 +1,4 @@
-from django.db.models import Q
-from django.contrib.auth import get_user_model
-# from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
+# accounts/api/views.py
 
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
@@ -9,8 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.filters import (
         SearchFilter,
         OrderingFilter,
-        ) 
-
+    ) 
 from rest_framework.generics import (
         CreateAPIView,
         DestroyAPIView,
@@ -18,25 +15,24 @@ from rest_framework.generics import (
         UpdateAPIView,
         RetrieveAPIView,
         RetrieveUpdateAPIView,
-        )
-
+    )
 from rest_framework.permissions import (
         AllowAny,
         IsAuthenticated,
         IsAdminUser,
         IsAuthenticatedOrReadOnly,
-        )
-
-
+    )
 from .serializers import (
         UserCreateSerializer,
         UserLoginSerializer
-        )
+    )
+
+from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
 
 class UserCreateAPIView(CreateAPIView):
-    # TODO make more secure
     permission_classes = [AllowAny]
 
     serializer_class = UserCreateSerializer
