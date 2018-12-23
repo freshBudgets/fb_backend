@@ -1,11 +1,13 @@
+# accounts/api/serializers.py
+
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.serializers import CharField, EmailField
-
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
 
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,14 +45,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.ModelSerializer):
     email = EmailField(label='Email Address', allow_blank=True, required=False)
-    # phone = CharField(allow_blank=True, required=False)
+    phone = CharField(allow_blank=True, required=False)
     token = CharField(allow_blank=True, read_only=True)
 
     class Meta:
         model = User
         fields = [
             'email',
-            # 'phone',
+            'phone',
             'password',
             'token',
         ]
@@ -60,18 +62,21 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         email = data['email']
-        # phone = data['phone']
+        phone = data['phone']
         raw_password = data['password']
         user_obj = None
 
         if not email and not phone:
-            raise serializers.ValidationError("An email is required to login")
+           raise serializers.ValidationError("An email is required to login")
 
-        # user = User.objects.filter(       # Do this for phone OR email login
-        #         Q(email=email) |
-        #         Q(phone=phone)
-        #     ).distinct()              
-        user = User.objects.filter(email=email).distinct()
+        user = User.objects.filter(       # Do this for phone OR email login
+                Q(email=email) |
+                Q(phone=phone)
+            ).distinct()              
+
+        # user = User.objects.filter(email=email).distinct()
+
+        print(user)
 
         if user.exists() and user.count() == 1:
             user_obj = user.first()

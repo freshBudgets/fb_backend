@@ -1,11 +1,13 @@
-# accounts.managers
+# accounts/managers.py
 
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager
 )
 
-
+################
+# USER MANAGER #
+################
 
 class UserManager(BaseUserManager):
     def create_user(self, email, phone, password, first_name="", last_name="", is_staff=False, is_admin=False):

@@ -1,4 +1,4 @@
-# accounts.models
+# accounts/models.py
 
 from django.db import models
 from django.contrib.auth.models import (
@@ -7,11 +7,15 @@ from django.contrib.auth.models import (
 
 from .managers import UserManager
 
+##############
+# USER MODEL #
+##############
+
 class User(AbstractBaseUser):
     email       = models.EmailField(verbose_name='email address', max_length=255, unique=True)
     first_name  = models.CharField(max_length=255, blank=True)
     last_name   = models.CharField(max_length=255, blank=True)
-    phone       = models.CharField(max_length=20)
+    phone       = models.CharField(max_length=20, unique=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active   = models.BooleanField(default=True) # can login
     is_staff    = models.BooleanField(default=False) # is staff
