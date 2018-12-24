@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
 from .forms import UserAdminCreationForm, UserAdminChangeForm
-from .models import User
+from .models import User, Profile
 
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
@@ -16,7 +16,7 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'last_name', 'phone', 'is_admin')
+    list_display = ('email', 'id', 'first_name', 'last_name', 'phone', 'is_admin')
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
@@ -37,6 +37,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserAdmin)
+admin.site.register(Profile)
 
 # Remove Group Model from admin. We're not using it.
 admin.site.unregister(Group)

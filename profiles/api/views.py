@@ -1,4 +1,4 @@
-# accounts/api/views.py
+# profiles/api/views.py
 
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
@@ -18,7 +18,7 @@ from rest_framework.permissions import (
 
 
 #####################
-# ACCOUNT API VIEWS #
+# PROFILE API VIEWS #
 #####################
 
 from .serializers import (
@@ -47,8 +47,8 @@ class UserLoginAPIView(APIView):
 
         # if data is not valid with serializer, raise exception
         if serializer.is_valid(raise_exception=True):
-            new_data = serializer.data
-            return Response(new_data, status=HTTP_200_OK)
+            validated_data = serializer.data
+            return Response(validated_data, status=HTTP_200_OK)
         else:
             return Response(serializer.error, status=HTTP_400_BAD_REQUEST)
 

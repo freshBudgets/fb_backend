@@ -15,16 +15,16 @@ class UserManager(BaseUserManager):
             raise ValueError("User must have an email address")
 
         new_user = self.model( 
-            email = email,
-            phone = phone,
-            first_name = first_name,
-            last_name = last_name,
-            is_staff = False,
-            is_admin = False
-        )
-       
+                email = email,
+                phone = phone,
+                first_name = first_name,
+                last_name = last_name,
+                is_staff = False,
+                is_admin = False
+            )
         new_user.set_password(password)
         new_user.save(using=self._db)
+
         return new_user
 
     def create_superuser(self, email, phone, password, is_staff=True, is_admin=True, first_name="", last_name=""):
@@ -32,15 +32,15 @@ class UserManager(BaseUserManager):
             raise ValueError("User must have an email address")
 
         new_superuser = self.model( 
-            email = email,
-            phone = phone,
-            first_name = first_name,
-            last_name = last_name,
-            is_staff = is_staff,
-            is_admin = is_admin
-        )
-
+                email = email,
+                phone = phone,
+                first_name = first_name,
+                last_name = last_name,
+                is_staff = is_staff,
+                is_admin = is_admin
+            )
         new_superuser.set_password(password)
         new_superuser.save(using=self._db)
+
         return new_superuser
 

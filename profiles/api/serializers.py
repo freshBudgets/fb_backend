@@ -1,4 +1,4 @@
-# accounts/api/serializers.py
+# profiles/api/serializers.py
 
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
@@ -7,10 +7,11 @@ from rest_framework.serializers import CharField, EmailField
 from rest_framework_jwt.settings import api_settings
 
 #######################
-# ACCOUNT SERIALIZERS #
+# PROFILE SERIALIZERS #
 #######################
 
 from django.contrib.auth import get_user_model
+from profiles.models import Profile
 
 User = get_user_model()
 
@@ -34,11 +35,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
     
     # overrides ModelSerializer.create() to save the object in the database after creation
     def create(self, validated_data):
-        email = validated_data['email'] 
-        password = validated_data['password']
+        email      = validated_data['email'] 
+        password   = validated_data['password']
+        phone      = validated_data['phone']
         first_name = validated_data['first_name']
-        last_name = validated_data['last_name']
-        phone = validated_data['phone']
+        last_name  = validated_data['last_name']
 
         new_user = User(
                 email = email,
@@ -49,9 +50,13 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user.set_password(password)
         new_user.save()
 
-        
-        validated_data['token'] = generate_jwt(new_user)
+        user_profile = Profile( 
+                user_id = new_user.id
+            )
+        user_profile.save()
 
+
+        # validated_data['token'] = generate_jwt(new_user)
         return validated_data
 
 
