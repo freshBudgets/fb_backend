@@ -168,14 +168,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
 }
-
-# If JWT_ALLOW_REFRESH is True, non-expired tokens can
-# be "refreshed" to obtain a brand new token with renewed expiration time.
-JWT_ALLOW_REFRESH = False
-
 
 # Does not require trailing forward slash on url POSTs
 APPEND_SLASH = False

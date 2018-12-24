@@ -5,17 +5,14 @@ from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.serializers import CharField, EmailField
 from rest_framework_jwt.settings import api_settings
+
+#######################
+# ACCOUNT SERIALIZERS #
+#######################
+
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-
-
-def generate_jwt(obj):
-    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-    payload = jwt_payload_handler(obj)
-    token = jwt_encode_handler(payload)
-    return token
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -52,6 +49,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user.set_password(password)
         new_user.save()
 
+        
         validated_data['token'] = generate_jwt(new_user)
 
         return validated_data
@@ -81,7 +79,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
         user_object = None
 
         if not email and not phone:
-           raise serializers.ValidationError("An email or phone is required to login")
+            raise serializers.ValidationError("An email or phone is required to login")
 
         # find users with with either a matching email or phone number
         user = User.objects.filter(       
@@ -103,5 +101,50 @@ class UserLoginSerializer(serializers.ModelSerializer):
         return data
 
 
+# TODO update phone in own view? it's own serializer? also update email in own serializer? For verification
+class UserUpdateSerializer(serializers.ModelSerializer): 
+    email = EmailField(label='Email Address', required=True)
+    phone = CharField(allow_blank=False, required=True)
+    first_name = CharField(allow_blank=True, required=False)
+    last_name = CharField(allow_blank=True, required=False)
 
-    
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'phone',
+            'first_name',
+            'last_name',
+        ]
+
+
+    # TODO update phone, update email
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data['email']
+        instance.phone = validated_data['phone']
+        instance.first_name = validated_data['first_name']
+        instance.last_name = validated_data['last_name']
+        instance.save()
+
+    def validate(self, data):
+        email = data['email']
+        phone = data['phone']
+        first_name = data['first_name']
+        last_name = data['last_name']
+
+        # all fields are blank
+        if not email and not phone and not first_name and not last_name:
+            raise serializers.ValidationError("Email, phone, first_name, last_name required")
+            
+        return data
+
+
+# HELPER FUNCTION
+# Generates a jwt for a given user object
+def generate_jwt(user_object):
+    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+    payload = jwt_payload_handler(user_object)
+    token = jwt_encode_handler(payload)
+    return token

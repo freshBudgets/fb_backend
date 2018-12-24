@@ -1,9 +1,7 @@
 # accounts/models.py
 
 from django.db import models
-from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager
-)
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 from .managers import UserManager
 
@@ -13,9 +11,9 @@ from .managers import UserManager
 
 class User(AbstractBaseUser):
     email       = models.EmailField(verbose_name='email address', max_length=255, unique=True)
+    phone       = models.CharField(max_length=20, unique=True)
     first_name  = models.CharField(max_length=255, blank=True)
     last_name   = models.CharField(max_length=255, blank=True)
-    phone       = models.CharField(max_length=20, unique=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active   = models.BooleanField(default=True) # can login
     is_staff    = models.BooleanField(default=False) # is staff
@@ -49,3 +47,13 @@ class User(AbstractBaseUser):
         return True
 
 
+
+#################
+# ACCOUNT MODEL #
+#################
+# TODO create account model to link user with more information
+
+# class Account(models.Model):
+#     user_id     = models.ForeignKey('User', on_delete=models.CASCADE)
+        
+    
