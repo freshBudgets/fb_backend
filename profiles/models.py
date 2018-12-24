@@ -1,4 +1,4 @@
-# accounts/models.py
+# profiles/models.py
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -49,11 +49,17 @@ class User(AbstractBaseUser):
 
 
 #################
-# ACCOUNT MODEL #
+# PROFILE MODEL #
 #################
-# TODO create account model to link user with more information
 
-# class Account(models.Model):
-#     user_id     = models.ForeignKey('User', on_delete=models.CASCADE)
-        
-    
+# class Profile(models.Model):
+#     user = models.ForeignKey(User, on_delete='cascasde')
+#     verified_email = models.CharField(max_length=255, blank=True)
+#     verified_phone = models.CharField(max_length=20, blank=True)
+
+#     sms_notifications = models.BooleanField(default=True)
+#     email_notifications = models.BooleanField(default=True)
+
+#     def __str__(self):
+#         return self.user
+

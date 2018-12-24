@@ -45,11 +45,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
 
-    'accounts',
+    'profiles',
 ]
 
-# Overrides default user model with extended user model in /accounts/models.py
-AUTH_USER_MODEL = 'accounts.User'
+# Overrides default user model with extended user model in /profiles/models.py
+AUTH_USER_MODEL = 'profiles.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

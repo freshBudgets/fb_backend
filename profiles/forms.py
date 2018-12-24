@@ -1,4 +1,4 @@
-# accounts/forms.py
+# profiles/forms.py
 
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
