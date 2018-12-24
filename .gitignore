@@ -2,5 +2,3 @@
 *.DS_Store
 env/*
 client-secret.json
-accounts/migrations/__pycache__/*
-accounts/api/__pycache__/*
