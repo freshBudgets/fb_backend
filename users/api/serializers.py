@@ -1,24 +1,21 @@
-# profiles/api/serializers.py
+# users/api/serializers.py
 
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.serializers import CharField, EmailField
-from rest_framework_jwt.settings import api_settings
 
-#######################
-# PROFILE SERIALIZERS #
-#######################
+####################
+# USER SERIALIZERS #
+####################
 
 from django.contrib.auth import get_user_model
-from profiles.models import Profile
+from users.models import Profile
 
 User = get_user_model()
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    token = CharField(allow_blank=True, read_only=True)
-
     class Meta:
         model = User
         fields = [
@@ -27,7 +24,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'phone',
-            'token'
         ]
 
         # prevents returning json from displaying given password
@@ -41,6 +37,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         first_name = validated_data['first_name']
         last_name  = validated_data['last_name']
 
+        # create the new user instance and save
         new_user = User(
                 email = email,
                 first_name = first_name,
@@ -50,28 +47,26 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user.set_password(password)
         new_user.save()
 
+        # create a profile for the user
         user_profile = Profile( 
-                user_id = new_user.id
+                user_id = new_user
             )
         user_profile.save()
 
-
-        # validated_data['token'] = generate_jwt(new_user)
-        return validated_data
+        return new_user
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
     email = EmailField(label='Email Address', allow_blank=True, required=False)
     phone = CharField(allow_blank=True, required=False)
-    token = CharField(allow_blank=True, read_only=True)
 
     class Meta:
         model = User
         fields = [
+            'id',
             'email',
             'phone',
             'password',
-            'token',
         ]
 
         # prevents returning json from displaying given password
@@ -92,7 +87,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
                 Q(phone=phone)
             ).distinct()              
 
-        # if there is 1 matching user
+        # if 1 user is found, set user_object to that user
         if user.exists() and user.count() == 1:
             user_object = user.first()
         else:
@@ -102,11 +97,14 @@ class UserLoginSerializer(serializers.ModelSerializer):
             if user_object.check_password(raw_password) == False:
                 raise serializers.ValidationError("Invalid password")
 
-        data['token'] = generate_jwt(user_object)
-        return data
+        validated_data = data
+        validated_data['id'] = user_object.id
+        validated_data['email'] = user_object.email
+        validated_data['phone'] = user_object.phone
+
+        return validated_data
 
 
-# TODO update phone in own view? it's own serializer? also update email in own serializer? For verification
 class UserUpdateSerializer(serializers.ModelSerializer): 
     email = EmailField(label='Email Address', required=True)
     phone = CharField(allow_blank=False, required=True)
@@ -123,33 +121,16 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         ]
 
 
-    # TODO update phone, update email
-
-    def update(self, instance, validated_data):
-        instance.email = validated_data['email']
-        instance.phone = validated_data['phone']
-        instance.first_name = validated_data['first_name']
-        instance.last_name = validated_data['last_name']
-        instance.save()
-
     def validate(self, data):
         email = data['email']
         phone = data['phone']
         first_name = data['first_name']
         last_name = data['last_name']
 
-        # all fields are blank
-        if not email and not phone and not first_name and not last_name:
+        # if all fields are blank
+        if not email or not phone or not first_name or not last_name:
             raise serializers.ValidationError("Email, phone, first_name, last_name required")
             
         return data
 
 
-# HELPER FUNCTION
-# Generates a jwt for a given user object
-def generate_jwt(user_object):
-    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-    payload = jwt_payload_handler(user_object)
-    token = jwt_encode_handler(payload)
-    return token

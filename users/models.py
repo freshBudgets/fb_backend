@@ -1,4 +1,4 @@
-# profiles/models.py
+# users/models.py
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -53,7 +53,7 @@ class User(AbstractBaseUser):
 #################
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     verified_email = models.CharField(max_length=255, blank=True)
     verified_phone = models.CharField(max_length=20, blank=True)
 
@@ -61,5 +61,6 @@ class Profile(models.Model):
     email_notifications = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.user)
+        return str(self.user_id)
+
 

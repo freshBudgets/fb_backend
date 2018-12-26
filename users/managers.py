@@ -1,4 +1,4 @@
-# profiles/managers.py
+# users/managers.py
 
 from django.db import models
 from django.contrib.auth.models import (
