@@ -3,12 +3,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-from .managers import UserManager
 
 ##############
 # USER MODEL #
 ##############
 
+from .managers import UserManager
+
+
+''' User Model
+    - A user is defined by a unique email and a unique phone number
+    - Users can login with either their phone number or email
+'''
 class User(AbstractBaseUser):
     email       = models.EmailField(verbose_name='email address', max_length=255, unique=True)
     phone       = models.CharField(max_length=20, unique=True)
@@ -52,10 +58,14 @@ class User(AbstractBaseUser):
 # PROFILE MODEL #
 #################
 
+''' Profile Model
+    - Is associated with a user instance through user_id
+    - Stores all settings and additional info on user
+'''
 class Profile(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    verified_email = models.CharField(max_length=255, blank=True)
-    verified_phone = models.CharField(max_length=20, blank=True)
+    verified_email = models.CharField(max_length=255, blank=True, unique=True)
+    verified_phone = models.CharField(max_length=20, blank=True, unique=True)
 
     sms_notifications = models.BooleanField(default=True)
     email_notifications = models.BooleanField(default=True)

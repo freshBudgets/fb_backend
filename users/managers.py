@@ -2,13 +2,19 @@
 
 from django.db import models
 from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager
-)
+        AbstractBaseUser, 
+        BaseUserManager
+    )
+
 
 ################
 # USER MANAGER #
 ################
 
+''' User Manager
+    - Creates and insert user into the database
+    - Includes suppport for creating superuser using 'python manage.py createsuperuser'
+'''
 class UserManager(BaseUserManager):
     def create_user(self, email, phone, password, first_name="", last_name="", is_staff=False, is_admin=False):
         if not email:

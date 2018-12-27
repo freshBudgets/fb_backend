@@ -5,6 +5,7 @@ from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.serializers import CharField, EmailField
 
+
 ####################
 # USER SERIALIZERS #
 ####################
@@ -13,7 +14,6 @@ from django.contrib.auth import get_user_model
 from users.models import Profile
 
 User = get_user_model()
-
 
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,6 +56,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return new_user
 
 
+''' 
+    UserLoginSerializer 
+    User can login using a password, and either an email or phone number
+'''
 class UserLoginSerializer(serializers.ModelSerializer):
     email = EmailField(label='Email Address', allow_blank=True, required=False)
     phone = CharField(allow_blank=True, required=False)
@@ -78,6 +82,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
         raw_password = data['password']
         user_object = None
 
+        # if neither email nor phone number sent in request
         if not email and not phone:
             raise serializers.ValidationError("An email or phone is required to login")
 
@@ -93,10 +98,12 @@ class UserLoginSerializer(serializers.ModelSerializer):
         else:
             raise serializers.ValidationError("Invalid credentials")
 
+        # if user_object exists
         if user_object:
             if user_object.check_password(raw_password) == False:
                 raise serializers.ValidationError("Invalid password")
 
+        # do this to return both user email AND phone number
         validated_data = data
         validated_data['id'] = user_object.id
         validated_data['email'] = user_object.email

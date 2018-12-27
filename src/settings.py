@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 
     'users',
+    'budgets',
 ]
 
 # Overrides default user model with extended user model in /users/models.py
