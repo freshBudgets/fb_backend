@@ -10,7 +10,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 from .managers import UserManager
 
-
 ''' User Model
     - A user is defined by a unique email and a unique phone number
     - Users can login with either their phone number or email

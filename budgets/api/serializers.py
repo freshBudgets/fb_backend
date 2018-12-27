@@ -1,10 +1,9 @@
 # budgets/api/serializers.py
 
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework.serializers import CharField, EmailField
+
 
 ######################
 # BUDGET SERIALIZERS #
@@ -12,7 +11,10 @@ from rest_framework.serializers import CharField, EmailField
 
 from budgets.models import Budget
 
-
+''' BudgetSerializer
+    - Serializes all data fed from BudgetViewSet
+    - Prevents user from creating two budgets with the same name
+'''
 class BudgetSerializer(ModelSerializer):
     class Meta:
         model = Budget
