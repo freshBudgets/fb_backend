@@ -2,7 +2,6 @@
 
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-from rest_framework.serializers import CharField, EmailField
 
 
 ######################
@@ -19,7 +18,6 @@ class BudgetSerializer(ModelSerializer):
     class Meta:
         model = Budget
         fields = [
-            'user_id',
             'name',
             'limit',
             'short_name',

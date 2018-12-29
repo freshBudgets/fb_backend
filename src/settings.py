@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'users',
     'budgets',
+    'transactions',
 ]
 
 # Overrides default user model with extended user model in /users/models.py

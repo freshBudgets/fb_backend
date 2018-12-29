@@ -19,7 +19,7 @@ class User(AbstractBaseUser):
     phone       = models.CharField(max_length=20, unique=True)
     first_name  = models.CharField(max_length=255, blank=True)
     last_name   = models.CharField(max_length=255, blank=True)
-    date_joined = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateField(auto_now_add=True)
     is_active   = models.BooleanField(default=True) # can login
     is_staff    = models.BooleanField(default=False) # is staff
     is_admin    = models.BooleanField(default=False) # is superuser/admin
@@ -63,8 +63,8 @@ class User(AbstractBaseUser):
 '''
 class Profile(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    verified_email = models.CharField(max_length=255, blank=True, unique=True)
-    verified_phone = models.CharField(max_length=20, blank=True, unique=True)
+    verified_email = models.CharField(max_length=255, blank=True)
+    verified_phone = models.CharField(max_length=20, blank=True)
 
     sms_notifications = models.BooleanField(default=True)
     email_notifications = models.BooleanField(default=True)
