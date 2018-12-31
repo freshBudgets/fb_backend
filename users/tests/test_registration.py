@@ -6,7 +6,6 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
-from users.api.views import UserCreateAPIView
 
 """ User Registration tests
     ----------------------- 

@@ -2,12 +2,10 @@
 
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from rest_framework.views import APIView
 from rest_framework import viewsets
-from rest_framework.permissions import (
-        AllowAny,
-        IsAuthenticated,
-    )
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 
 ######################
@@ -17,15 +15,25 @@ from rest_framework.permissions import (
 from budgets.models import Budget
 from .serializers import BudgetSerializer
 
-'''         Budget View Set
 
-    GET     /api/budgets/       list budgets for current user
-    POST    /api/budgets/       create budget for current user
-    GET     /api/budgets/:id/   retrieve budget information
-    PUT     /api/budgets/:id/   update budget information
-    DELETE  /api/budgets/:id/   destroy budget
-'''
 class BudgetViewSet(viewsets.ModelViewSet):
+    """
+    list:
+    Return a list of all budgets for current user
+
+    create:
+    Create a new budget instance for current user
+
+    retrieve:
+    Retrieve budget information for budget
+
+    update:
+    Update budget information
+
+    destroy:
+    Delete budget instance
+    """
+
     permission_classes = [IsAuthenticated]
     serializer_class = BudgetSerializer
 
