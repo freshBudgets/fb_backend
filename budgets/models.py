@@ -15,9 +15,9 @@ User = get_user_model()
     - Stores information on a budget
 '''
 class Budget(models.Model):
-    user_id    = models.ForeignKey(User, on_delete=models.CASCADE)
-    name       = models.CharField(max_length=255, blank=False)
-    limit      = models.FloatField()
+    user    = models.ForeignKey(User, on_delete=models.CASCADE)
+    name    = models.CharField(max_length=255, blank=False)
+    limit   = models.FloatField()
 
     def __str__(self):
         return self.name

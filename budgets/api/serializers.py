@@ -25,12 +25,11 @@ class BudgetSerializer(ModelSerializer):
     def validate(self, data):
         name = data['name']
         limit = data['limit']
-
         current_user = self.context['request'].user
 
         # prevent user from having two same named budgets
         query = Budget.objects.filter( 
-                user_id = current_user,
+                user = current_user,
                 name = name
             )
         if query.exists():
@@ -41,14 +40,14 @@ class BudgetSerializer(ModelSerializer):
     def create(self, validated_data):
         name = validated_data['name'] 
         limit = validated_data['limit']
-        user_id = self.context['request'].user
+        user = self.context['request'].user
 
         # create the new budget instance
         new_budget = Budget( 
                 name = name,
                 limit = limit,
-                user_id = user_id
+                user = user
             )
-
         new_budget.save()
+
         return new_budget
