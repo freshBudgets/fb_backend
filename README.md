@@ -81,3 +81,4 @@ localhost:8000
 * https://console.cloud.google.com/sql/instances?project=freshbudgets
 * https://cloud.google.com/appengine/docs/standard/python/config/appref
 * https://www.django-rest-framework.org/topics/documenting-your-api/
+* https://pypi.org/project/drf-yasg/

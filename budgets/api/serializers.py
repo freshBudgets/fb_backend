@@ -10,14 +10,15 @@ from rest_framework.serializers import ModelSerializer
 
 from budgets.models import Budget
 
-''' BudgetSerializer
+""" BudgetSerializer
     - Serializes all data fed from BudgetViewSet
     - Prevents user from creating two budgets with the same name
-'''
+"""
 class BudgetSerializer(ModelSerializer):
     class Meta:
         model = Budget
         fields = [
+            'id',
             'name',
             'limit',
         ]

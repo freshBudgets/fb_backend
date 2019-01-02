@@ -1,18 +1,18 @@
-# budgets/test_budget_list.py
+# budgets/test_budget_read.py
 
 import pytest
 from django.urls import reverse
 from django.test import TestCase
 from rest_framework.test import APIClient
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 from budgets.api.views import BudgetViewSet
 
 @pytest.mark.django_db
-class TestBudgetList(TestCase):
-    """ Budget List test
+class TestBudgetRead(TestCase):
+    """ Budget Read test
         -------------------- 
-        test_budget_list
+        test_budget_read
     """
     
     def setUp(self):
@@ -33,36 +33,29 @@ class TestBudgetList(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token)
 
 
-    def test_budget_list(self):
-        # this is how to obtain the url of an action from a viewset
+    def test_budget_read(self):
+        # create a budget
         view = BudgetViewSet()
         view.basename = 'budgets'
         view.request = None
-        budget_list_url = view.reverse_action('list')
+        budget_create_url = view.reverse_action('list')
 
-        response = self.client.get(budget_list_url)
-        assert response.status_code == HTTP_200_OK
+        budget_create_data = {
+            'name': 'budget',
+            'limit': 100
+        }
+        response = self.client.post(budget_create_url, budget_create_data, format='json')
+
+        # retrieve the budget info for the created budget
+        budget_id = response.data['id']
+        budget_detail_url = view.reverse_action('detail', args=(budget_id,))
+        response = self.client.get(budget_detail_url) 
+
+        assert response.data['id'] == budget_id
+        assert response.data['name'] == 'budget'
+        assert response.data['limit'] == 100
 
 
 
 
 
-
-
-
-
-
-
-
-    # def test_budget_create(self):
-    #     budget_create_url = reverse('budgets:budgets-create')
-
-    #     valid_data = {
-    #         'name': 'new budget',
-    #         'limit': 20.50
-    #     }
-    
-    #     self.client.post(budget_create_url, data, format='json')
-    #     assert response.status_code == HTTP_201_CREATED
-    #     assert response.data['name'] == 'new budget'
-    #     assert response.data['limit'] == 20.50

@@ -15,7 +15,6 @@ from rest_framework.permissions import IsAuthenticated
 from budgets.models import Budget
 from .serializers import BudgetSerializer
 
-
 class BudgetViewSet(viewsets.ModelViewSet):
     """
     list:
@@ -37,10 +36,11 @@ class BudgetViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = BudgetSerializer
 
+    # define all objects to be queried
+    # In this case, only query budgets for current user
     def get_queryset(self):
         current_user = self.request.user
         return Budget.objects.filter(user_id = current_user.id)
-
 
 
 

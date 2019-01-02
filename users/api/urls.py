@@ -2,13 +2,13 @@ from django.conf.urls import url
 from django.urls import path, include
 
 from .views import (
-        UserCreateAPIView,
-        UserLoginAPIView,
-        UserUpdateAPIView,
+        UserCreate,
+        UserLogin,
+        UserUpdate,
     )
 
 urlpatterns = [
-    path('register', UserCreateAPIView.as_view(), name='register'),
-    path('login', UserLoginAPIView.as_view(), name='login'),
-    path('update', UserUpdateAPIView.as_view(), name='update-user'),
+    path('register', UserCreate.as_view(), name='register'),
+    path('login', UserLogin.as_view(), name='login'),
+    path('update', UserUpdate.as_view(), name='update-user'),
 ]

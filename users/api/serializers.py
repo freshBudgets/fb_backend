@@ -15,6 +15,10 @@ from users.models import Profile
 
 User = get_user_model()
 
+""" UserCreateSerializer
+    - Serializes all data fed from UserCreate
+    - Creates a user and a matching profile for every new user
+"""
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -26,7 +30,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'phone',
         ]
 
-        # prevents returning json from displaying given password
+        # prevents response from printing given password
         extra_kwargs = {'password': {'write_only': True}}
     
     # overrides ModelSerializer.create() to save the object in the database after creation
@@ -56,10 +60,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return new_user
 
 
-''' 
-    UserLoginSerializer 
-    User can login using a password, and either an email or phone number
-'''
+""" UserLoginSerializer
+    - Serializes all data fed from UserLogin
+    - Users can login using either an email address or phone number
+"""
 class UserLoginSerializer(serializers.ModelSerializer):
     email = EmailField(label='Email Address', allow_blank=True, required=False)
     phone = CharField(allow_blank=True, required=False)
@@ -67,15 +71,16 @@ class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id',
+            'id',           # id for user, used to generate JWT in login view
             'email',
             'phone',
             'password',
         ]
 
-        # prevents returning json from displaying given password
+        # prevents response from printing given password
         extra_kwargs = {'password': {'write_only': True}}
 
+    # run whenever serializer.is_valid() is called
     def validate(self, data):
         email = data['email']
         phone = data['phone']
@@ -87,14 +92,14 @@ class UserLoginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("An email or phone is required to login")
 
         # find users with with either a matching email or phone number
-        user = User.objects.filter(       
+        query = User.objects.filter(       
                 Q(email=email) |
                 Q(phone=phone)
             ).distinct()              
 
         # if 1 user is found, set user_object to that user
-        if user.exists() and user.count() == 1:
-            user_object = user.first()
+        if query.exists() and query.count() == 1:
+            user_object = query.first()
         else:
             raise serializers.ValidationError("Invalid credentials")
 
@@ -103,7 +108,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
             if user_object.check_password(raw_password) == False:
                 raise serializers.ValidationError("Invalid password")
 
-        # do this to return both user email AND phone number
+        # return both user email AND phone number no matter which was entered
         validated_data = data
         validated_data['id'] = user_object.id
         validated_data['email'] = user_object.email
@@ -112,11 +117,14 @@ class UserLoginSerializer(serializers.ModelSerializer):
         return validated_data
 
 
+""" UserUpdateSerializer
+    - Serializes all data fed from UserUpdate
+"""
 class UserUpdateSerializer(serializers.ModelSerializer): 
-    email = EmailField(label='Email Address', required=True)
+    email = EmailField(label='Email Address', allow_blank=False, required=True)
     phone = CharField(allow_blank=False, required=True)
-    first_name = CharField(allow_blank=True, required=False)
-    last_name = CharField(allow_blank=True, required=False)
+    first_name = CharField(allow_blank=True, required=True)
+    last_name = CharField(allow_blank=True, required=True)
 
     class Meta:
         model = User
@@ -134,10 +142,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         first_name = data['first_name']
         last_name = data['last_name']
 
-        # if all fields are blank
-        if not email or not phone or not first_name or not last_name:
-            raise serializers.ValidationError("Email, phone, first_name, last_name required")
-            
         return data
 
 

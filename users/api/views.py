@@ -1,20 +1,14 @@
 # users/api/views.py
 
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from rest_framework.views import APIView
-from rest_framework.filters import (
-        SearchFilter, 
-        OrderingFilter
-    )
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CREATED
+from rest_framework import generics
 from rest_framework.generics import (
+        GenericAPIView,
         CreateAPIView,
-        UpdateAPIView,
     )
-from rest_framework.permissions import (
-        AllowAny,
-        IsAuthenticated,
-    )
+from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 
 ##################
@@ -31,11 +25,11 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-'''         User Create View
+class UserCreate(CreateAPIView):
+    """
+    Register and create user in database 
+    """
 
-    POST    /api/user/register      create user
-'''
-class UserCreateAPIView(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserCreateSerializer
 
@@ -46,20 +40,20 @@ class UserCreateAPIView(CreateAPIView):
         # if data is not valid with serializer, raise exception
         if serializer.is_valid(raise_exception=True):
             new_user = serializer.save()
+
             # TODO send out phone and/or email verification here
 
-            return Response({'user info': serializer.data, 'tokens': generate_tokens(new_user)}, status=HTTP_200_OK)
+            return Response({'user info': serializer.data, 'tokens': generate_tokens(new_user)}, status=HTTP_201_CREATED)
 
         else:
             return Response(serializer.error, status=HTTP_400_BAD_REQUEST)
 
 
+class UserLogin(GenericAPIView):
+    """
+    Login users with either a phone number or an email.
+    """
 
-'''         User Login View
-
-    POST    /api/user/login         login user
-'''
-class UserLoginAPIView(APIView):
     permission_classes = [AllowAny]
     serializer_class = UserLoginSerializer
 
@@ -69,6 +63,7 @@ class UserLoginAPIView(APIView):
 
         # if data is not valid with serializer, raise exception
         if serializer.is_valid(raise_exception=True):
+            # get user from id in serializer. Generate JWT from found user
             current_user = User.objects.get(id=serializer.data['id'])
             return Response({'user info': serializer.data, 'tokens': generate_tokens(current_user)}, status=HTTP_200_OK)
 
@@ -77,12 +72,15 @@ class UserLoginAPIView(APIView):
 
 
 
-'''         User Update View
+class UserUpdate(GenericAPIView):
+    """ 
+    get:
+    Get current user information to show on update page
 
-    GET     /api/user/update        view current user info
-    PUT     /api/user/update        update user info
-'''
-class UserUpdateAPIView(UpdateAPIView):
+    put:
+    Update current user information
+    """
+
     permission_classes = [IsAuthenticated]  
     serializer_class = UserUpdateSerializer
 
@@ -123,7 +121,6 @@ class UserUpdateAPIView(UpdateAPIView):
         else:
             return Response(serializer.error, status=HTTP_400_BAD_REQUEST)
 
-    
 
 # HELPER FUNCTION
 # generates refresh and access JWT for a given user object

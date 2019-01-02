@@ -4,7 +4,7 @@ import pytest
 from django.urls import reverse
 from django.test import TestCase
 from rest_framework.test import APIClient
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 
 """ User Registration tests
@@ -19,7 +19,6 @@ class TestUserRegistration(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-
     def test_register(self):
         register_url = reverse('register')
 
@@ -32,7 +31,7 @@ class TestUserRegistration(TestCase):
             'last_name': 'last'
         }
         response = self.client.post(register_url, valid_data, format='json')
-        assert response.status_code == HTTP_200_OK
+        assert response.status_code == HTTP_201_CREATED
         assert 'user info' in response.data
         assert 'tokens' in response.data
 

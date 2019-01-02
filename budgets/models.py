@@ -1,17 +1,16 @@
 # budgets/models.py
 
 from django.db import models
-
+from django.contrib.auth import get_user_model
 
 ################
 # BUDGET MODEL #
 ################
 
-from django.contrib.auth import get_user_model
 User = get_user_model()
 
 ''' Budget Model
-    - Is linked to user instance through user_id
+    - Is linked to user instance through 'user' attribute
     - Stores information on a budget
 '''
 class Budget(models.Model):
