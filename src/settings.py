@@ -117,7 +117,7 @@ else:
             'ENGINE': 'django.db.backends.mysql',
             'HOST': '127.0.0.1',
             'PORT': '3306',
-            'NAME': 'test',
+            'NAME': 'freshbudgets',
             'USER': 'admin',
             'PASSWORD': 'fr3$hbudgets',
         }
