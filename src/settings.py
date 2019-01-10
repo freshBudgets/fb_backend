@@ -32,9 +32,9 @@ DEBUG = True
 # See https://docs.djangoproject.com/en/2.1/ref/settings/
 ALLOWED_HOSTS = ['*']
 
-# Application definition
-
+# Application definitions
 INSTALLED_APPS = [
+    # Default apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,10 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third party apps
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
 
+    # FreshBudgets apps
     'users',
     'budgets',
     'transactions',
@@ -87,10 +89,6 @@ WSGI_APPLICATION = 'src.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 # [START db_setup]
 if os.getenv('GAE_APPLICATION', None):
@@ -172,7 +170,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
 }
 

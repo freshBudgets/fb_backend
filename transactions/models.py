@@ -22,7 +22,7 @@ User = get_user_model()
 class Transaction(models.Model):
     user_id      = models.ForeignKey(User, on_delete=models.CASCADE)
     budget_id    = models.ForeignKey(Budget, null=True, default=None, on_delete=models.SET_NULL)
-    # account_id = models.ForeignKey(Account, on_delete=models.CASCADE)
+    # account_id = models.ForeignKey(Account, null=False, on_delete=models.CASCADE)
     name         = models.CharField(max_length=255, blank=False)
     og_name      = models.CharField(max_length=255, blank=False) 
     amount       = models.FloatField()
