@@ -174,4 +174,4 @@ REST_FRAMEWORK = {
 }
 
 # Does not require trailing forward slash on url POSTs
-APPEND_SLASH = False
+APPEND_SLASH = True
