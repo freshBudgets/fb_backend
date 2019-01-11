@@ -3,10 +3,7 @@
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework import viewsets
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
-
 
 ######################
 # BUDGET API VIEWSET #
@@ -24,7 +21,7 @@ class BudgetViewSet(viewsets.ModelViewSet):
     Create a new budget instance for current user
 
     retrieve:
-    Retrieve budget information for budget
+    Retrieve budget information for single budget instance along with transactions in existing budget
 
     update:
     Update budget information
@@ -42,41 +39,14 @@ class BudgetViewSet(viewsets.ModelViewSet):
         current_user = self.request.user
         return Budget.objects.filter(user_id = current_user.id)
 
-
-
-
-####################
-# BUDGET API VIEWS #
-####################
-
-# # OUTDATED
-# class BudgetAPIView(ListCreateAPIView):
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = BudgetSerializer
-
-#     def get_queryset(self):
-#         current_user = self.request.user
-#         return Budgets.objects.filter(user_id = current_ueser.id)
-
-#     def post(self, request, *args, **kwargs):
-#         data = request.data
-#         serializer = BudgetSerializer(data=data, context={'request': request})
-#         current_user = request.user
-
-#         # if data is not valid with serializer, raise exception
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save() 
-#             return Response(serializer.data, HTTP_200_OK)
-
-#         else:
-#             return Response(HTTP_400_BAD_REQUEST)
-
-# # OUTDATED
-# class BudgetUpdateAPIView(UpdateAPIView):
-#     permission_classea = [IsAuthenticated]
-#     serializer_class = BudgetSerializer
-
-#     def get_queryset(self):
-#         current_user = self.request.user
-#         return Budgets.objects.filter(user_id = current_user.id)
     
+    def retrieve(self, request, pk=None):
+        budget = Budget.objects.get(id=pk)
+        budget_info = {}
+
+        budget_info['name'] = budget.name
+        budget_info['limit'] = budget.limit
+
+        # TODO return transactions, paginated
+
+        return Response(budget_info, HTTP_200_OK)
