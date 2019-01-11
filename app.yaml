@@ -1,8 +1,15 @@
 # app.yaml
-# [START django_app]
+
 runtime: python37
+
 entrypoint: gunicorn -b :8080 src.wsgi
-env: standard
+
+env_variables:
+    - PRODUCTION=true
+    - DJANGO_VERSION=2.1.4
+
+install:
+    - pip install -r requirements.txt
 
 handlers:
     # This configures Google App Engine to serve the files in the app's static
@@ -15,4 +22,3 @@ handlers:
     # the entire handlers section) when there are no static files defined.
     - url: /.*
       script: auto
-# [END django_app]

@@ -1,14 +1,13 @@
-# src/tests_settings.py
+# src/defaults.py
 
-########################
-# SETTINGS FOR TESTING #
-########################
+
+# TODO seperate secret keys n stuff into dev/production files
+
 
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -17,8 +16,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Update the secret key to a value of your own before deploying the app.
 SECRET_KEY = 'sl%6*!k6jjwmt#8-m+m4npiw3d$xo(q1#6q)p_)b9obtl7j9kp'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 # SECURITY WARNING: App Engine's security features ensure that it is safe to
 # have ALLOWED_HOSTS = ['*'] when the app is deployed. If you deploy a Django
@@ -26,9 +23,9 @@ DEBUG = True
 # See https://docs.djangoproject.com/en/2.1/ref/settings/
 ALLOWED_HOSTS = ['*']
 
-# Application definition
-
+# Application definitions
 INSTALLED_APPS = [
+    # Default apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,9 +33,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third party apps
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_yasg',
 
+    # FreshBudgets apps
     'users',
     'budgets',
     'transactions',
@@ -81,10 +81,6 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
 # [START db_setup]
 if os.getenv('GAE_APPLICATION', None):
     # Running on production App Engine, so connect to Google Cloud SQL using
@@ -95,7 +91,7 @@ if os.getenv('GAE_APPLICATION', None):
             'HOST': '/cloudsql/freshbudgets:us-central1:database-instance',
             'USER': 'admin',
             'PASSWORD': 'fr3$hbudgets',
-            'NAME': 'test',
+            'NAME': 'freshbudgets',
         }
     }
 else:
@@ -110,7 +106,7 @@ else:
             'ENGINE': 'django.db.backends.mysql',
             'HOST': '127.0.0.1',
             'PORT': '3306',
-            'NAME': 'test',
+            'NAME': 'freshbudgets',
             'USER': 'admin',
             'PASSWORD': 'fr3$hbudgets',
         }
@@ -165,9 +161,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
 }
 
 # Does not require trailing forward slash on url POSTs
-APPEND_SLASH = False
+APPEND_SLASH = True
