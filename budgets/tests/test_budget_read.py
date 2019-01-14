@@ -51,7 +51,6 @@ class TestBudgetRead(TestCase):
         budget_detail_url = view.reverse_action('detail', args=(budget_id,))
         response = self.client.get(budget_detail_url) 
 
-        assert response.data['id'] == budget_id
         assert response.data['name'] == 'budget'
         assert response.data['limit'] == 100
 
