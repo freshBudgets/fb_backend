@@ -1,7 +1,8 @@
 # src/production.py
+# Settings used only in production
 
 from .defaults import *
 
-DEBUG == False
+DEBUG = False
 
-# other production specific stuff
+# other production specific settings

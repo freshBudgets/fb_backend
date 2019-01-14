@@ -5,11 +5,8 @@ runtime: python37
 entrypoint: gunicorn -b :8080 src.wsgi
 
 env_variables:
-    - PRODUCTION=true
-    - DJANGO_VERSION=2.1.4
-
-install:
-    - pip install -r requirements.txt
+    PRODUCTION: true
+    DJANGO_VERSION: 2.1.4
 
 handlers:
     # This configures Google App Engine to serve the files in the app's static

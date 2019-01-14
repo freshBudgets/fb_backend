@@ -1,5 +1,5 @@
 # src/defaults.py
-
+# Default settings used in both production/development
 
 # TODO seperate secret keys n stuff into dev/production files
 
@@ -166,3 +166,4 @@ REST_FRAMEWORK = {
 
 # Does not require trailing forward slash on url POSTs
 APPEND_SLASH = True
+
