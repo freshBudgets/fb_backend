@@ -5,24 +5,33 @@ language: python
 python:
     - "3.7-dev"
 
-deploy:
-  provider: gae
-  keyfile: client-secret.json
-  project: freshbudgets
-  on: master
-
-# before_install:
-    - openssl aes-256-cbc -K $encrypted_2f9dea2d8fd1_key -iv $encrypted_2f9dea2d8fd1_iv -in client-secret.json.enc -out client-secret.json -d
-
-# command to install dependencies
-install:
-  - pip install -r requirements.txt
-
-env:
-  - STAGING=true
-  - DJANGO_VERSION=2.1.4
-
 services:
     - mysql
+
+# Decrypt the credentials we added to the repo using the key we added with the Travis command line tool
+before_install:
+    - openssl aes-256-cbc -K $encrypted_2f9dea2d8fd1_key -iv $encrypted_2f9dea2d8fd1_iv -in client-secret.json.enc -out client-secret.json -d
+
+# Command to install dependencies
+install:
+    - pip install -r requirements.txt
+
+# Set environment variables
+env:
+    - STAGING=true
+    - DJANGO_VERSION=2.1.4
+
+before_script:
+    - mysql -e 'create database test;' -u root
+
 script:
     - pytest
+
+
+# [START travis_deploy]
+deploy:
+    provider: gae
+    keyfile: client-secret.json
+    project: freshbudgets
+    on: master
+# [END travis_deploy]
